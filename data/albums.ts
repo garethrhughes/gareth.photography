@@ -7,6 +7,7 @@ import { photoUrl } from "@/lib/photos";
 //
 // In development, photos are served from /photos/<slug>/ (public/photos/).
 // In production, set NEXT_PUBLIC_CDN_URL=https://cdn.gareth.photography to serve from CDN.
+// To regenerate dimensions after adding new photos, run: node scripts/gen-dimensions.mjs
 
 // Dimensions are used by PhotoGrid for a justified row layout.
 // To regenerate after adding new photos, run:

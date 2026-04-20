@@ -1,4 +1,4 @@
-BUCKET ?= photos.gareth.photography
+BUCKET ?= gareth.photography
 CLOUDFRONT_ID ?=
 ALBUM ?=
 
@@ -23,14 +23,14 @@ upload-album:
 ifndef ALBUM
 	$(error ALBUM is required. Usage: make upload-album ALBUM=noosa)
 endif
-	aws s3 sync photos/$(ALBUM)/ s3://$(BUCKET)/$(ALBUM)/ \
+	aws s3 sync public/photos/$(ALBUM)/ s3://$(BUCKET)/$(ALBUM)/ \
 		--exclude ".*" \
 		--cache-control "public, max-age=31536000, immutable"
 	@echo "Uploaded $(ALBUM) to s3://$(BUCKET)/$(ALBUM)/"
 
 # Upload all local photo albums to S3
 upload:
-	aws s3 sync photos/ s3://$(BUCKET)/ \
+	aws s3 sync public/photos/ s3://$(BUCKET)/ \
 		--exclude ".*" \
 		--cache-control "public, max-age=31536000, immutable"
 
