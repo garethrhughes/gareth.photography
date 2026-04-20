@@ -44,12 +44,9 @@ export default async function AlbumPage({ params }: PageProps) {
           ← All albums
         </Link>
         <h1 className="mt-4 text-2xl font-light tracking-wide text-text-primary">{album.title}</h1>
-        <p className="text-sm text-text-muted mt-1">{album.year}</p>
-        {album.description && (
-          <p className="mt-3 text-sm text-text-muted max-w-xl leading-relaxed">
-            {album.description}
-          </p>
-        )}
+        <p className="text-sm text-text-muted mt-1">
+          {album.year}{album.description && <span className="mx-2">·</span>}{album.description}
+        </p>
       </div>
 
       <PhotoGrid photos={album.photos} />
