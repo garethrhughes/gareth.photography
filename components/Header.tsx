@@ -3,12 +3,18 @@ import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
 
+interface HeaderProps {
+  currentPath?: string;
+}
+
 const navLinks = [
-  { href: 'https://garethhughes.dev', label: 'Web', external: true },
-  { href: 'https://www.instagram.com/garethhughes.photography/', label: 'Instagram', external: true },
+  { href: 'https://garethhughes.dev/', label: 'Blog' },
+  { href: 'https://garethhughes.dev/projects/', label: 'Projects' },
+  { href: 'https://garethhughes.dev/about/', label: 'About' },
+  { href: '/', label: 'Photography' }
 ];
 
-export default function Header() {
+export default function Header({ currentPath = '' }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-border bg-surface px-4 md:px-6">
       <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
@@ -26,17 +32,22 @@ export default function Header() {
       </Link>
 
       <nav className="hidden md:flex items-center gap-1 ml-4">
-        {navLinks.map(({ href, label }) => (
-          <a
-            key={href}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors text-text-tertiary hover:bg-surface-hover hover:text-text-primary"
-          >
-            {label}
-          </a>
-        ))}
+        {navLinks.map(({ href, label }) => {
+          const isActive = currentPath === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-surface-active text-squirrel-700'
+                  : 'text-text-tertiary hover:bg-surface-hover hover:text-text-primary'
+              }`}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="ml-auto flex items-center gap-1">

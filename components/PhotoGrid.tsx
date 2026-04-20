@@ -8,9 +8,6 @@ interface PhotoGridProps {
   photos: Photo[];
 }
 
-// Each photo needs a known aspect ratio to compute justified rows.
-// We derive it from the Photo data (width/height) if present, otherwise
-// fall back to a neutral 3/2 landscape ratio so layout still works.
 function getAspectRatio(photo: Photo): number {
   if (photo.width && photo.height) {
     return photo.width / photo.height;
@@ -18,43 +15,98 @@ function getAspectRatio(photo: Photo): number {
   return 3 / 2;
 }
 
-// Distribute `count` photos into rows of `perRow` photos each,
-// with remainder photos spread into earlier rows so all rows are
-// as equal as possible (e.g. 6 photos at 3/row → [3,3], not [3,2,1]).
+function isPortrait(photo: Photo): boolean {
+  return getAspectRatio(photo) < 1;
+}
+
+// Arrange photos into rows that alternate between two patterns:
+//   odd rows:  [landscape, portrait, landscape]  (2L + 1P)
+//   even rows: [portrait, landscape, portrait]   (1L + 2P)
+//
+// This ensures every row has both orientations and adjacent rows
+// look visually different. Falls back gracefully when one pool runs dry.
 function buildRows(photos: Photo[], perRow: number): number[][] {
-  const total = photos.length;
-  const numRows = Math.ceil(total / perRow);
-  const rows: number[][] = [];
-  let idx = 0;
-  for (let r = 0; r < numRows; r++) {
-    // Distribute any remainder into the first rows
-    const remaining = total - idx;
-    const rowsLeft = numRows - r;
-    const size = Math.ceil(remaining / rowsLeft);
-    rows.push(
-      Array.from({ length: size }, (_, i) => idx + i)
-    );
-    idx += size;
+  const portraits = photos
+    .map((p, i) => i)
+    .filter((i) => isPortrait(photos[i]));
+  const landscapes = photos
+    .map((p, i) => i)
+    .filter((i) => !isPortrait(photos[i]));
+
+  // If only one orientation exists, just chunk sequentially
+  if (portraits.length === 0 || landscapes.length === 0) {
+    const all = photos.map((_, i) => i);
+    const numRows = Math.ceil(all.length / perRow);
+    return Array.from({ length: numRows }, (_, r) => {
+      const remaining = all.length - r * perRow;
+      const size = Math.ceil(remaining / (numRows - r));
+      return all.slice(r * perRow, r * perRow + size);
+    });
   }
+
+  const rows: number[][] = [];
+  let pi = 0; // portrait pool cursor
+  let li = 0; // landscape pool cursor
+  let rowIndex = 0;
+
+  while (pi < portraits.length || li < landscapes.length) {
+    const row: number[] = [];
+
+    // Alternate pattern: odd rows favour landscape, even rows favour portrait
+    // Pattern for perRow=3: [L,P,L] then [P,L,P] then [L,P,L] ...
+    // Pattern for perRow=2: [L,P] then [P,L] then [L,P] ...
+    const favourLandscape = rowIndex % 2 === 0;
+
+    for (let slot = 0; slot < perRow; slot++) {
+      // For perRow=3: slots 0,2 get majority; slot 1 gets minority
+      // For perRow=2: slot 0 gets majority; slot 1 gets minority
+      const wantMajority =
+        perRow === 2
+          ? slot === 0
+          : slot !== Math.floor(perRow / 2);
+
+      const wantLandscape = favourLandscape ? wantMajority : !wantMajority;
+
+      if (wantLandscape && li < landscapes.length) {
+        row.push(landscapes[li++]);
+      } else if (!wantLandscape && pi < portraits.length) {
+        row.push(portraits[pi++]);
+      } else if (li < landscapes.length) {
+        row.push(landscapes[li++]);
+      } else if (pi < portraits.length) {
+        row.push(portraits[pi++]);
+      }
+    }
+
+    if (row.length > 0) rows.push(row);
+    rowIndex++;
+  }
+
+  // If the last row has only 1 photo, move one from the previous row into it
+  if (rows.length >= 2 && rows[rows.length - 1].length === 1) {
+    const last = rows[rows.length - 1];
+    const prev = rows[rows.length - 2];
+    last.unshift(prev.pop()!);
+  }
+
   return rows;
 }
 
 export default function PhotoGrid({ photos }: PhotoGridProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const PHOTOS_PER_ROW = 3;
-  const rows = buildRows(photos, PHOTOS_PER_ROW);
+  const rows = buildRows(photos, 3);
+  const mobileRows = buildRows(photos, 2);
 
-  return (
-    <>
-      <div className="px-4 py-4 md:px-8 flex flex-col gap-1">
-        {rows.map((row, rowIdx) => {
+  function renderGrid(rowSet: number[][], hidden: string) {
+    return (
+      <div className={`${hidden} px-4 py-4 md:px-8 flex flex-col gap-1`}>
+        {rowSet.map((row, rowIdx) => {
           const rowAspect = row.reduce(
             (sum, i) => sum + getAspectRatio(photos[i]),
             0
           );
-          // Last row: don't stretch to fill — left-align at natural sizes
-          const isLastRow = rowIdx === rows.length - 1;
+          const isLastRow = rowIdx === rowSet.length - 1;
 
           return (
             <div
@@ -65,10 +117,6 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
               {row.map((photoIdx) => {
                 const photo = photos[photoIdx];
                 const ar = getAspectRatio(photo);
-                // Each photo's flex-grow is proportional to its aspect ratio
-                // so they fill the row evenly at equal height.
-                const flexGrow = ar / rowAspect;
-                // padding-bottom trick gives each item its correct intrinsic height
                 const paddingBottom = `${(1 / ar) * 100}%`;
 
                 return (
@@ -80,7 +128,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
                     style={
                       isLastRow
                         ? { width: `${(ar / rowAspect) * 100}%` }
-                        : { flexGrow, flexShrink: 1, flexBasis: 0 }
+                        : { flexGrow: ar / rowAspect, flexShrink: 1, flexBasis: 0 }
                     }
                   >
                     <div style={{ paddingBottom }} />
@@ -98,7 +146,13 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
           );
         })}
       </div>
+    );
+  }
 
+  return (
+    <>
+      {renderGrid(mobileRows, "sm:hidden")}
+      {renderGrid(rows, "hidden sm:flex sm:flex-col")}
       {lightboxIndex !== null && (
         <Lightbox
           photos={photos}
