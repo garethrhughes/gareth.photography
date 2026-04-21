@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
-
 @theme inline {
   --color-squirrel-50: #eff6ff;
   --color-squirrel-100: #dbeafe;
@@ -52,26 +50,6 @@
   --text-muted: #64748b;
   --text-faint: #94a3b8;
   --photo-gap-bg: #e2e8f0;
-}
-
-/* Dark mode */
-.dark {
-  --background: #0a0a0a;
-  --foreground: #e5e5e5;
-  --surface: #111111;
-  --surface-alt: #0a0a0a;
-  --surface-brand: #1a1a2e;
-  --surface-hover: #1a1a1a;
-  --surface-raised: #262626;
-  --surface-active: #1e293b;
-  --border-color: #262626;
-  --border-light: #1a1a1a;
-  --text-primary: #e5e5e5;
-  --text-secondary: #d4d4d4;
-  --text-tertiary: #a3a3a3;
-  --text-muted: #737373;
-  --text-faint: #525252;
-  --photo-gap-bg: #1a1a1a;
 }
 
 html, body {
