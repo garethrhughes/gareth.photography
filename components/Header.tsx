@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
 
 interface HeaderProps {
@@ -23,10 +22,10 @@ export default function Header({ currentPath = '' }: HeaderProps) {
           alt="Gareth Hughes"
           width={32}
           height={32}
-          className="rounded-full object-cover ring-2 ring-squirrel-200 dark:ring-surface-raised"
+          className="rounded-full object-cover ring-2 ring-squirrel-200"
           priority
         />
-        <span className="hidden sm:inline whitespace-nowrap text-base font-bold text-squirrel-800 dark:text-text-primary">
+        <span className="hidden sm:inline whitespace-nowrap text-base font-bold text-squirrel-800">
           Gareth Hughes
         </span>
       </Link>
@@ -50,7 +49,6 @@ export default function Header({ currentPath = '' }: HeaderProps) {
       </nav>
 
       <div className="ml-auto flex items-center gap-1">
-        <ThemeToggle />
         <Link
           href="https://instagram.com/garethhughes.photography"
           target="_blank"
