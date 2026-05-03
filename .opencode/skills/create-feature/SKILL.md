@@ -31,15 +31,20 @@ Use the **architect** skill to:
    network changes, new resources)
 2. If yes: write a proposal in `docs/proposals/NNNN-short-title.md`, including the
    **Infrastructure Addendum** if any infra is touched
-3. Get the proposal reviewed (share with the team / another agent) and update status to
-   `Accepted`
-4. Create any ADR(s) that the proposal produces in `docs/decisions/`
+3. **Present the completed proposal to the user and explicitly ask them to either:**
+   - **Accept the proposal** (proceed to Step 2), or
+   - **Provide feedback** (revise the proposal and re-present for approval)
+   
+   Do not proceed until the user explicitly accepts. If the user provides feedback, incorporate
+   it, update the proposal, and ask again. Repeat until the user accepts.
+4. Once accepted: update the proposal status to `Accepted`
+5. Create any ADR(s) that the proposal produces in `docs/decisions/`
 
 **Skip this step only for:** trivial bug fixes, copy changes, or configuration tweaks that
 do not affect architecture, module boundaries, schema, infra, or security posture.
 
-**Handoff to Step 2 when:** the proposal status is `Accepted` (or the change is confirmed
-as trivial).
+**Handoff to Step 2 when:** the user has explicitly accepted the proposal (or the change is
+confirmed as trivial).
 
 ---
 
@@ -156,6 +161,24 @@ to `Accepted`, linking the ADR numbers.
    - For infra changes: the `terraform plan` (or equivalent) summary
    - Infosec verdict (APPROVED / APPROVED WITH EXCEPTION + ADR link)
 4. Ensure CI passes (including infra `plan` and any IaC tests)
+
+---
+
+## MCP Tools Available Across the Cycle
+
+The following MCP servers are available to the skills invoked during this workflow. This
+section summarises where each is most relevant:
+
+| MCP Server | Most relevant steps | Primary use |
+|---|---|---|
+| **context7** | Step 1, Step 2 | Look up live framework/provider docs before designing or coding |
+| **github** | Step 2, Step 3, Step 6 | Branch/PR operations, CI status checks, diff access for review |
+| **filesystem** | Step 1, Step 2, Step 5 | Read/write proposals, ADRs, and source files |
+| **semgrep** | Step 2, Step 3, Step 4 | Static analysis — run before handoff at each gate |
+
+Each skill in the cycle is responsible for using these tools appropriately — the guidance
+above is a cross-step reference to avoid duplication. See each individual skill for
+step-specific instructions.
 
 ---
 
