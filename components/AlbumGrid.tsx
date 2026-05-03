@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { Album } from "@/data/types";
 
@@ -19,9 +21,14 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
             <img
               src={album.coverImage}
               alt={album.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 select-none"
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300" />
+            <div
+              className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300"
+              onContextMenu={(e) => e.preventDefault()}
+            />
             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 text-center">
               <span className="text-white text-sm font-medium tracking-widest uppercase">
                 {album.title}
