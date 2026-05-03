@@ -136,9 +136,14 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
                     <img
                       src={photo.src}
                       alt={photo.alt}
-                      className="absolute inset-0 w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105 select-none"
+                      draggable={false}
+                      onContextMenu={(e) => e.preventDefault()}
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                    <div
+                      className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
+                      onContextMenu={(e) => e.preventDefault()}
+                    />
                   </button>
                 );
               })}
