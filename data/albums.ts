@@ -49,6 +49,13 @@ const dimensions: Record<string, Record<string, { width: number; height: number 
     "019.jpg": { width: 1365, height: 2048 },
     "020.jpg": { width: 1920, height: 1280 },
   },
+  "coledale": {
+    "001.jpg": { width: 1365, height: 2048 },
+    "002.jpg": { width: 2048, height: 1365 },
+    "003.jpg": { width: 1365, height: 2048 },
+    "004.jpg": { width: 1365, height: 2048 },
+    "005.jpg": { width: 1365, height: 2048 },
+  },
   "legacy": {
     "001.jpg": { width: 1920, height: 1280 },
     "002.jpg": { width: 1638, height: 2048 },
@@ -217,6 +224,13 @@ function photos(slug: string, count: number, label: string) {
 }
 
 export const albums: Album[] = [
+  {
+    slug: "coledale",
+    title: "Coledale",
+    year: 2026,
+    coverImage: photoUrl("coledale", "001.jpg"),
+    photos: photos("coledale", 5, "Coledale"),
+  },
   {
     slug: "noosa",
     title: "Noosa",
