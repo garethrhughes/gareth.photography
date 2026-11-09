@@ -75,6 +75,7 @@ export default function Lightbox({ photos, currentIndex, onClose, onNavigate }: 
           alt={photo.alt}
           className="max-w-[90vw] max-h-[90vh] object-contain select-none"
           draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
         />
         {photo.alt && (
           <p className="absolute -bottom-8 left-0 right-0 text-center text-white/40 text-xs tracking-wide">

@@ -8,3 +8,4 @@
 | [0004](0004-tailwind-v4-css-first.md) | Tailwind CSS v4 with CSS-First Configuration | Accepted | 2025-05-01 |
 | [0005](0005-static-data-in-albums-ts.md) | Static TypeScript File as Album Data Source of Truth | Accepted | 2025-05-01 |
 | [0006](0006-photourl-single-url-construction-point.md) | `photoUrl()` as the Single Photo URL Construction Point | Accepted | 2025-05-01 |
+| [0007](0007-right-click-download-protection.md) | Browser-level right-click and drag-to-download protection | Accepted | 2026-05-03 |
