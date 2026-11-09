@@ -32,7 +32,7 @@ const socials = [
 export default function Footer() {
   return (
     <footer className="mt-16 border-t border-border bg-surface-alt">
-      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <p className="text-sm text-text-muted">
             © {new Date().getFullYear()} Gareth Hughes
