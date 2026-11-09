@@ -8,6 +8,7 @@ interface HeaderProps {
 
 const navLinks = [
   { href: 'https://garethhughes.dev/', label: 'Blog' },
+  { href: 'https://garethhughes.dev/archive/', label: 'Archive' },
   { href: 'https://garethhughes.dev/projects/', label: 'Projects' },
   { href: 'https://garethhughes.dev/about/', label: 'About' },
   { href: '/', label: 'Photography' }
